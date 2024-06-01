@@ -82,10 +82,42 @@ estadoPostAtaque :: Nave -> Nave -> Nave
 estadoPostAtaque naveAtacante naveAtacada = calculoDeEstado (utilizarPoderes naveAtacante) (utilizarPoderes naveAtacada)
 
 calculoDeEstado :: Nave -> Nave -> Nave 
-calculoDeEstado naveAtacante naveAtacada = mapDurabilidad (subtract (danoRecibido naveAtacante naveAtacada)) naveAtacada
+calculoDeEstado naveAtacante naveAtacada
+    | escudo naveAtacada > ataque naveAtacante = naveAtacada
+    |otherwise = mapDurabilidad (subtract (danoRecibido naveAtacante naveAtacada)) naveAtacada
 
 danoRecibido :: Nave -> Nave -> Int
 danoRecibido naveAtacante naveAtacada = ataque naveAtacante - escudo naveAtacada
 
 utilizarPoderes :: Nave -> Nave 
 utilizarPoderes unaNave = foldl (\ x f -> f x) unaNave (poder unaNave)
+
+--PUNTO 4
+fueraDeCombate :: Nave -> Bool
+fueraDeCombate = (==0) . durabilidad 
+
+
+--PUNTO 5 
+type Estrategia = Nave -> Bool
+
+navesDebil :: Nave -> Bool
+navesDebil = (<200).escudo 
+
+naveConPeligrosidad :: Int -> Nave -> Bool 
+naveConPeligrosidad cotaDeAtaque = (>cotaDeAtaque) . ataque  
+
+naveFueraDeCombate :: Nave -> Nave -> Bool 
+naveFueraDeCombate naveAtacante = (==0) . durabilidad. estadoPostAtaque naveAtacante
+
+naveFundida :: Nave -> Bool
+naveFundida  unaNave = ((<50) .escudo) unaNave && ((<70) . ataque) unaNave 
+
+
+estadoFlotaEnemiga :: [Nave] -> Nave -> Estrategia -> [Nave]
+estadoFlotaEnemiga flotaEnemiga unaNave unaEstrategia = (danoAlaFlota unaNave . determinarObjetivos unaEstrategia) flotaEnemiga 
+
+danoAlaFlota :: Nave -> [Nave] -> [Nave]
+danoAlaFlota unaNave = map (estadoPostAtaque unaNave) 
+
+determinarObjetivos :: Estrategia -> [Nave] -> [Nave]
+determinarObjetivos = filter 

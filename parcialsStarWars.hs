@@ -1,11 +1,12 @@
 
 
+
 data Nave = Nave {
 durabilidad :: Int,
 escudo :: Int,
 ataque :: Int,
 poder :: [Poderes]
-}
+} deriving (Show)
 
 type Poderes = Nave -> Nave 
 
@@ -121,3 +122,21 @@ danoAlaFlota unaNave = map (estadoPostAtaque unaNave)
 
 determinarObjetivos :: Estrategia -> [Nave] -> [Nave]
 determinarObjetivos = filter 
+
+--PUNTO 6
+misionFulminar :: Nave -> [Nave] -> Estrategia -> Estrategia -> [Nave]
+misionFulminar unaNave flotaEnemiga estrategia1 estrategia2 = estadoFlotaEnemiga flotaEnemiga unaNave (minimizarDurabilidad estrategia1 estrategia2 unaNave flotaEnemiga)
+
+
+minimizarDurabilidad :: Estrategia -> Estrategia -> Nave -> [Nave] -> Estrategia 
+minimizarDurabilidad estrategia1 estrategia2 unaNave flotaEnemiga 
+    | durabilidadUnaFlota (estadoFlotaEnemiga flotaEnemiga unaNave estrategia1) > durabilidadUnaFlota (estadoFlotaEnemiga flotaEnemiga unaNave estrategia2) = estrategia2
+    | otherwise = estrategia1 
+
+
+--PUNTO 7 
+flotaInfinita :: Nave -> [Nave]
+flotaInfinita = repeat 
+
+-- No, porque para obtener la durabilidad total se de
+--be tener el resultado de la suma, y al ser infinita siempre va a buscar el final para seguir sumando.

@@ -76,3 +76,16 @@ durabilidadUnaFlota  = sumatoriaDeDurabilidades
 
 sumatoriaDeDurabilidades :: [Nave] -> Int 
 sumatoriaDeDurabilidades = sum . map durabilidad 
+
+
+estadoPostAtaque :: Nave -> Nave -> Nave 
+estadoPostAtaque naveAtacante naveAtacada = calculoDeEstado (utilizarPoderes naveAtacante) (utilizarPoderes naveAtacada)
+
+calculoDeEstado :: Nave -> Nave -> Nave 
+calculoDeEstado naveAtacante naveAtacada = mapDurabilidad (subtract (danoRecibido naveAtacante naveAtacada)) naveAtacada
+
+danoRecibido :: Nave -> Nave -> Int
+danoRecibido naveAtacante naveAtacada = ataque naveAtacante - escudo naveAtacada
+
+utilizarPoderes :: Nave -> Nave 
+utilizarPoderes unaNave = foldl (\ x f -> f x) unaNave (poder unaNave)

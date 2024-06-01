@@ -53,6 +53,11 @@ poder = [reparacionDeEmergencia, movimientoTurbo 5]
 movimientoTurbo :: Int -> Nave -> Nave
 movimientoTurbo  cantidad = mapAtaque ( (cantidad * 25) +)
 
+movimientoSuperTurbo :: Nave -> Nave 
+movimientoSuperTurbo = mapAtaque (+75) . mapDurabilidad (subtract 45) 
+
+
+
 mapAtaque :: (Int -> Int) -> Nave -> Nave
 mapAtaque f unaNave = unaNave {ataque = f $ ataque unaNave } 
 
@@ -65,3 +70,9 @@ mapDurabilidad f unaNave = unaNave {durabilidad = f $ durabilidad unaNave}
 mapEscudos :: (Int -> Int) -> Nave -> Nave 
 mapEscudos f unaNave = unaNave {escudo = f $ escudo unaNave }
 
+--PUNTO 2 
+durabilidadUnaFlota :: [Nave] -> Int
+durabilidadUnaFlota  = sumatoriaDeDurabilidades 
+
+sumatoriaDeDurabilidades :: [Nave] -> Int 
+sumatoriaDeDurabilidades = sum . map durabilidad 
